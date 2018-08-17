@@ -58,13 +58,13 @@ class Dqn():
 
         self.model = Network(input_size, nb_action)
         self.memory = ReplayMemory(100000)
-        self.optimizer = optim.Adam(self.model, lr=0.001)
+        self.optimizer = optim.Adam(self.model.parameters(), lr=0.001)
         self.last_state = torch.Tensor(input_size).unsqueeze(0)
         self.last_action = 0
         self.last_reward = 0
 
     def select(self, state):
-        probs = F.softmax(self.model(Variable(state, volatile=True)) * 7)
+        probs = F.softmax(self.model(Variable(state, volatile=True)) * 100)
         action = probs.multinomial(num_samples=1)
         return action.data[0, 0]
 
@@ -76,6 +76,47 @@ class Dqn():
         self.optimizer.zero_grad()
         td_loss.backward(retain_variables=True)
         self.optimizer.step()
+
+    def update(self, reward, signal):
+        new_state = torch.Tensor(signal).float().unsqueeze(0)
+        last_action_tensor = torch.LongTensor([int(self.last_action)])  # converting an int to a tensor
+        reward_tensor = torch.Tensor([self.last_reward])
+        self.memory.push((self.last_state, new_state, last_action_tensor, reward_tensor))
+        action = self.select(new_state)
+        if len(self.memory.memory) > 100:
+            # print("sampling")
+            batch_state, batch_next_state, batch_action, batch_reward = self.memory.sample(100)
+            # print("learning")
+            self.learn(batch_state, batch_next_state, batch_reward, batch_action)
+
+        self.last_action = action
+        self.last_state = new_state
+        self.last_reward = reward
+        self.reward_window.append(reward)
+        if len(self.reward_window) > 1000:
+            del self.reward_window[0]
+
+        # print("acting")
+        return action
+
+    def score(self):
+        return sum(self.reward_window) / (len(self.reward_window) + 1)  # trick to avoid dividing by 0
+
+    def save(self):
+        torch.save({
+            'state_dict': self.model.state_dict,
+            'optimizer': self.optimizer.state_dict
+        }, 'last_brain.pth')
+
+    def load(self):
+        if os.path.isfile('last_brain.pth'):
+            print("Loading last save")
+            checkpoint = torch.load('last_brain.pth')
+            self.model.load_state_dict(checkpoint['state_dict'])
+            self.optimizer.load_state_dict(checkpoint['state_dict'])
+            print("Loaded")
+        else:
+            print("No save to load")
 
 #
 # # Implementing Deep Q Learning
