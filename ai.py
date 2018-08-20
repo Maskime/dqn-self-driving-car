@@ -104,8 +104,8 @@ class Dqn():
 
     def save(self):
         torch.save({
-            'state_dict': self.model.state_dict,
-            'optimizer': self.optimizer.state_dict
+            'state_dict': self.model.state_dict(),
+            'optimizer': self.optimizer.state_dict()
         }, 'last_brain.pth')
 
     def load(self):
@@ -113,7 +113,7 @@ class Dqn():
             print("Loading last save")
             checkpoint = torch.load('last_brain.pth')
             self.model.load_state_dict(checkpoint['state_dict'])
-            self.optimizer.load_state_dict(checkpoint['state_dict'])
+            self.optimizer.load_state_dict(checkpoint['optimizer'])
             print("Loaded")
         else:
             print("No save to load")
