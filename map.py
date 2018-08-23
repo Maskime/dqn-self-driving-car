@@ -1,7 +1,6 @@
 # Self Driving Car
 
 # Importing the libraries
-import numpy as np
 # Importing the Kivy packages
 from kivy.app import App
 from kivy.clock import Clock
@@ -9,17 +8,14 @@ from kivy.config import Config
 from kivy.core.window import Window
 
 from kivy.uix.button import Button
-from kivy.uix.widget import Widget
-from kivy.vector import Vector
 
 import matplotlib.pyplot as plt
-from kivy.properties import ObjectProperty
 
 # Importing widget that are outside this file for kivy
-from CarWidget import Car
-from PaintWidget import PaintWidget
-from Balls import Ball1, Ball2, Ball3
-from GameWidget import Game
+from widgets.ButtonsWidget import Buttons
+from widgets.CarWidget import Car
+from widgets.PaintWidget import PaintWidget
+from widgets.GameWidget import Game
 
 # Importing the Dqn object from our AI in ai.py
 from ai import Dqn
@@ -37,6 +33,8 @@ class CarApp(App):
     def __init__(self, **kwargs):
         super(CarApp, self).__init__(**kwargs)
         self.painter = PaintWidget()
+        # TODO add callbacks for the buttons
+        self.buttons = Buttons()
 
     def build(self):
         self.game_widget = Game()
@@ -47,17 +45,9 @@ class CarApp(App):
         Clock.schedule_interval(self.game_widget.update, 1.0 / 60.0)
         self.painter.game = self.game_widget
 
-        clearbtn = Button(text='clear')
-        savebtn = Button(text='save', pos=(self.game_widget.width, 0))
-        loadbtn = Button(text='load', pos=(2 * self.game_widget.width, 0))
-        clearbtn.bind(on_release=self.clear_canvas)
-        savebtn.bind(on_release=self.save)
-        loadbtn.bind(on_release=self.load)
-
+        #TODO : Order the widgets with the GridLayout
         self.game_widget.add_widget(self.painter)
-        self.game_widget.add_widget(clearbtn)
-        self.game_widget.add_widget(savebtn)
-        self.game_widget.add_widget(loadbtn)
+        self.game_widget.add_widget(self.buttons)
 
         return self.game_widget
 
@@ -75,8 +65,6 @@ class CarApp(App):
         print("loading last saved brain...")
         self.brain.load()
 
-
-# TODO : Move the sand global var to its correct scope
 
 # Running the whole thing
 if __name__ == '__main__':
