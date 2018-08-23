@@ -7,7 +7,7 @@ from kivy.app import App
 from kivy.clock import Clock
 from kivy.config import Config
 from kivy.core.window import Window
-from kivy.graphics import Color, Line
+
 from kivy.uix.button import Button
 from kivy.uix.widget import Widget
 from kivy.vector import Vector
@@ -16,21 +16,13 @@ import matplotlib.pyplot as plt
 from kivy.properties import ObjectProperty
 
 from CarWidget import Car
+from PaintWidget import PaintWidget
 
 # Importing the Dqn object from our AI in ai.py
 from ai import Dqn
 
 # Adding this line if we don't want the right click to put a red point
 Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
-
-# Introducing last_x and last_y, used to keep the last point in memory when we draw the sand on the map
-last_x = 0
-last_y = 0
-n_points = 0
-length = 0
-
-
-# Creating the car class
 
 class Ball1(Widget):
     pass
@@ -135,38 +127,6 @@ class Game(Widget):
         self.last_distance = distance
 
 
-# Adding the painting tools
-
-class MyPaintWidget(Widget):
-    game = None
-
-    def on_touch_down(self, touch):
-        global length, n_points, last_x, last_y
-        with self.canvas:
-            Color(0.8, 0.7, 0)
-            d = 10.
-            touch.ud['line'] = Line(points=(touch.x, touch.y), width=10)
-            last_x = int(touch.x)
-            last_y = int(touch.y)
-            n_points = 0
-            length = 0
-            self.game.sand[int(touch.x), int(touch.y)] = 1
-
-    def on_touch_move(self, touch):
-        global length, n_points, last_x, last_y
-        if touch.button == 'left':
-            touch.ud['line'].points += [touch.x, touch.y]
-            x = int(touch.x)
-            y = int(touch.y)
-            length += np.sqrt(max((x - last_x) ** 2 + (y - last_y) ** 2, 2))
-            n_points += 1.
-            density = n_points / (length)
-            touch.ud['line'].width = int(20 * density + 1)
-            self.game.sand[int(touch.x) - 10: int(touch.x) + 10, int(touch.y) - 10: int(touch.y) + 10] = 1
-            last_x = x
-            last_y = y
-
-
 # Adding the API Buttons (clear, save and load)
 
 class CarApp(App):
@@ -176,7 +136,7 @@ class CarApp(App):
 
     def __init__(self, **kwargs):
         super(CarApp, self).__init__(**kwargs)
-        self.painter = MyPaintWidget()
+        self.painter = PaintWidget()
 
     def build(self):
         self.game_widget = Game()
