@@ -15,6 +15,8 @@ class Buttons(GridLayout):
     def __init__(self, **kwargs):
         super(Buttons, self).__init__(**kwargs)
         self.cols = 3
+        self.size_hint = (0.2, 1)
+
         self.clear_btn = Button(text='clear')
         self.save_btn = Button(text='save')
         self.load_btn = Button(text='load')
