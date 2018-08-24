@@ -6,6 +6,8 @@ from kivy.uix.widget import Widget
 
 import numpy as np
 
+from widgets.Balls import Ball1, Ball2, Ball3
+
 
 class Game(Widget):
     car = ObjectProperty(None)
@@ -27,7 +29,7 @@ class Game(Widget):
         super(Game, self).__init__(**kwargs)
 
     def reset_sand(self):
-        self.sand = np.zeros((self.width, self.height))
+        self.sand = np.zeros((int(self.width), int(self.height)))
         self.car.sand = self.sand
 
     def serve_car(self):
@@ -43,17 +45,24 @@ class Game(Widget):
             self.goal_x = self.width - 20
             self.goal_y = 20
 
+    def changed_size(self):
+        changed = self.car.sand_length != 0 and self.car.sand_length != self.width
+        return changed or self.car.sand_width != 0 and self.car.sand_width != self.height
+
     def init(self):
-        self.reset_sand()
-        self.car.sand = self.sand
-        self.car.sand_length = self.width
-        self.car.sand_width = self.height
-        self.first_update = False
+        if self.first_update or self.changed_size():
+            self.first_update = False
+            self.reset_sand()
+            self.car.sand = self.sand
+            self.car.sand_length = self.width
+            self.car.sand_width = self.height
+            self.set_goal()
+            self.brain.reset()
+            print ("resetting, new size [{}x{}], goal_position ({};{})".format(self.width, self.height, self.goal_x, self.goal_y))
 
     def update(self, dt):
 
-        if self.first_update:
-            self.init()
+        self.init()
 
         xx = self.goal_x - self.car.x
         yy = self.goal_y - self.car.y

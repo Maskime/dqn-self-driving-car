@@ -52,14 +52,28 @@ class ReplayMemory(object):
 
 class Dqn():
 
+    input_size = 0
+    nb_action = 0
+
     def __init__(self, input_size, nb_action, gamma):
         self.gamma = gamma
         self.reward_window = []
+        self.input_size = input_size
+        self.nb_action = nb_action
 
         self.model = Network(input_size, nb_action)
         self.memory = ReplayMemory(100000)
         self.optimizer = optim.Adam(self.model.parameters(), lr=0.001)
         self.last_state = torch.Tensor(input_size).unsqueeze(0)
+        self.last_action = 0
+        self.last_reward = 0
+
+    def reset(self):
+        self.reward_window = []
+        self.model = Network(self.input_size, self.nb_action)
+        self.memory = ReplayMemory(100000)
+        self.optimizer = optim.Adam(self.model.parameters(), lr=0.001)
+        self.last_state = torch.Tensor(self.input_size).unsqueeze(0)
         self.last_action = 0
         self.last_reward = 0
 

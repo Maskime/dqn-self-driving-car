@@ -8,6 +8,7 @@ from kivy.config import Config
 from kivy.core.window import Window
 
 from kivy.uix.button import Button
+from kivy.uix.gridlayout import GridLayout
 
 import matplotlib.pyplot as plt
 
@@ -24,6 +25,10 @@ from ai import Dqn
 Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
 
 
+class RootWidget(GridLayout):
+    pass
+
+
 # Adding the API Buttons (clear, save and load)
 class CarApp(App):
     brain = Dqn(5, 3, 0.9)
@@ -33,8 +38,11 @@ class CarApp(App):
     def __init__(self, **kwargs):
         super(CarApp, self).__init__(**kwargs)
         self.painter = PaintWidget()
-        # TODO add callbacks for the buttons
+
         self.buttons = Buttons()
+        self.buttons.clear_callback = self.clear_canvas
+        self.buttons.load_callback = self.load
+        self.buttons.save_callback = self.save
 
     def build(self):
         self.game_widget = Game()
@@ -44,12 +52,13 @@ class CarApp(App):
 
         Clock.schedule_interval(self.game_widget.update, 1.0 / 60.0)
         self.painter.game = self.game_widget
-
-        #TODO : Order the widgets with the GridLayout
         self.game_widget.add_widget(self.painter)
-        self.game_widget.add_widget(self.buttons)
 
-        return self.game_widget
+        root = RootWidget()
+        root.add_widget(self.game_widget)
+        root.add_widget(self.buttons)
+
+        return root
 
     def clear_canvas(self, obj):
         self.painter.canvas.clear()
