@@ -6,20 +6,16 @@ from kivy.app import App
 from kivy.clock import Clock
 from kivy.config import Config
 from kivy.core.window import Window
-
-from kivy.uix.button import Button
 from kivy.uix.gridlayout import GridLayout
 
 import matplotlib.pyplot as plt
 
-# Importing widget that are outside this file for kivy
-from widgets.ButtonsWidget import Buttons
-from widgets.CarWidget import Car
-from widgets.PaintWidget import PaintWidget
-from widgets.GameWidget import Game
-
 # Importing the Dqn object from our AI in ai.py
 from ai import Dqn
+# Importing widget that are outside this file for kivy
+from widgets.ButtonsWidget import Buttons
+from widgets.GameWidget import Game
+from widgets.PaintWidget import PaintWidget
 
 # Adding this line if we don't want the right click to put a red point
 Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
@@ -40,9 +36,7 @@ class CarApp(App):
         self.painter = PaintWidget()
 
         self.buttons = Buttons()
-        self.buttons.clear_callback = self.clear_canvas
-        self.buttons.load_callback = self.load
-        self.buttons.save_callback = self.save
+        self.buttons.set_bindinds(self.clear_canvas, self.save, self.load)
 
     def build(self):
         self.game_widget = Game()

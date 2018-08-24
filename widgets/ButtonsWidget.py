@@ -1,6 +1,5 @@
 from kivy.uix.button import Button
 from kivy.uix.gridlayout import GridLayout
-from kivy.uix.widget import Widget
 
 
 class Buttons(GridLayout):
@@ -15,17 +14,17 @@ class Buttons(GridLayout):
     def __init__(self, **kwargs):
         super(Buttons, self).__init__(**kwargs)
         self.cols = 3
-        self.size_hint = (0.2, 1)
+        self.size_hint = (0.5, 0.2)
 
         self.clear_btn = Button(text='clear')
         self.save_btn = Button(text='save')
         self.load_btn = Button(text='load')
 
-        # clearbtn.bind(on_release=self.clear_callback)
-        # savebtn.bind(on_release=self.save_callback)
-        # loadbtn.bind(on_release=self.load_callback)
-        #
-
         self.add_widget(self.clear_btn)
         self.add_widget(self.save_btn)
         self.add_widget(self.load_btn)
+
+    def set_bindinds(self, clear_callback, save_callback, load_callback):
+        self.clear_btn.bind(on_release=clear_callback)
+        self.save_btn.bind(on_release=save_callback)
+        self.load_btn.bind(on_release=load_callback)

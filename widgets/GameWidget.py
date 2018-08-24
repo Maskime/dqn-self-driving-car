@@ -7,6 +7,7 @@ from kivy.uix.widget import Widget
 import numpy as np
 
 from widgets.Balls import Ball1, Ball2, Ball3
+from widgets.CarWidget import Car
 
 
 class Game(Widget):
