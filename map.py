@@ -8,13 +8,13 @@ from kivy.config import Config
 from kivy.core.window import Window
 from kivy.uix.gridlayout import GridLayout
 
-import matplotlib.pyplot as plt
-
 # Importing the Dqn object from our AI in ai.py
 from ai import Dqn
 # Importing widget that are outside this file for kivy
 from widgets.ButtonsWidget import Buttons
 from widgets.GameWidget import Game
+from widgets.GraphWidget import GraphWidget
+from widgets.RightPanelWidget import RightPanelWidget
 from widgets.PaintWidget import PaintWidget
 
 # Adding this line if we don't want the right click to put a red point
@@ -30,13 +30,11 @@ class CarApp(App):
     brain = Dqn(5, 3, 0.9)
     scores = []
     game_widget = None
+    right_panel = None
 
     def __init__(self, **kwargs):
         super(CarApp, self).__init__(**kwargs)
         self.painter = PaintWidget()
-
-        self.buttons = Buttons()
-        self.buttons.set_bindinds(self.clear_canvas, self.save, self.load)
 
     def build(self):
         self.game_widget = Game()
@@ -48,9 +46,17 @@ class CarApp(App):
         self.painter.game = self.game_widget
         self.game_widget.add_widget(self.painter)
 
+        self.right_panel = RightPanelWidget()
+        buttons = Buttons()
+        buttons.set_bindinds(self.clear_canvas, self.save, self.load)
+        graph = GraphWidget()
+        graph.game_widget = self.game_widget
+        self.right_panel.add_widget(buttons)
+        self.right_panel.add_widget(graph)
+
         root = RootWidget()
         root.add_widget(self.game_widget)
-        root.add_widget(self.buttons)
+        root.add_widget(self.right_panel)
 
         return root
 
@@ -61,8 +67,8 @@ class CarApp(App):
     def save(self, obj):
         print("saving brain...")
         self.brain.save()
-        plt.plot(self.scores)
-        plt.show()
+        # plt.plot(self.scores)
+        # plt.show()
 
     def load(self, obj):
         print("loading last saved brain...")
