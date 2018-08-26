@@ -1,4 +1,5 @@
 # Creating the game class
+from kivy.core.window import Window
 from kivy.vector import Vector
 
 from kivy.properties import ObjectProperty
@@ -25,9 +26,11 @@ class Game(Widget):
     goal_istop = True
     first_update = True
     last_distance = 0
+    dirty = False
 
     def __init__(self, **kwargs):
         super(Game, self).__init__(**kwargs)
+        Window.bind(on_resize=self.init)
 
     def reset_sand(self):
         self.sand = np.zeros((int(self.width), int(self.height)))
@@ -50,16 +53,19 @@ class Game(Widget):
         changed = self.car.sand_length != 0 and self.car.sand_length != self.width
         return changed or self.car.sand_width != 0 and self.car.sand_width != self.height
 
-    def init(self):
-        if self.first_update or self.changed_size():
+    def init(self, window=None, width=None, height=None):
+        if self.first_update or self.changed_size() or window is not None:
             self.first_update = False
             self.reset_sand()
+            self.car.center = ((self.width / 2), (self.height / 2))
             self.car.sand = self.sand
             self.car.sand_length = self.width
             self.car.sand_width = self.height
             self.set_goal()
             self.brain.reset()
-            print ("resetting, new size [{}x{}], goal_position ({};{})".format(self.width, self.height, self.goal_x, self.goal_y))
+            print ("resetting, new size [{}x{}], goal_position ({};{})".format(self.width, self.height, self.goal_x,
+                                                                               self.goal_y))
+            print (self.pos)
 
     def update(self, dt):
 

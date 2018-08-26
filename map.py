@@ -36,6 +36,9 @@ class CarApp(App):
         super(CarApp, self).__init__(**kwargs)
         self.painter = PaintWidget()
 
+    def on_resize(self):
+        print("resized")
+
     def build(self):
         self.game_widget = Game()
         self.game_widget.brain = self.brain
@@ -46,17 +49,18 @@ class CarApp(App):
         self.painter.game = self.game_widget
         self.game_widget.add_widget(self.painter)
 
-        self.right_panel = RightPanelWidget()
-        buttons = Buttons()
-        buttons.set_bindinds(self.clear_canvas, self.save, self.load)
+        # self.right_panel = RightPanelWidget()
+        # buttons = Buttons()
+        # buttons.set_bindinds(self.clear_canvas, self.save, self.load)
         graph = GraphWidget()
+        graph.nb_pointsdisplay = 500
         graph.game_widget = self.game_widget
-        self.right_panel.add_widget(buttons)
-        self.right_panel.add_widget(graph)
+        # self.right_panel.add_widget(buttons)
+        # self.right_panel.add_widget(graph)
 
         root = RootWidget()
         root.add_widget(self.game_widget)
-        root.add_widget(self.right_panel)
+        root.add_widget(graph)
 
         return root
 
