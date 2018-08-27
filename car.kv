@@ -2,12 +2,10 @@
 # ref: https://kivy.org/docs/tutorials/pong.html
 
 <RootWidget>:
-    cols: 1
-    rows: 2
-
+    orientation: 'vertical'
 
 <Car>:
-    size: 20, 10
+    size:10,20
     canvas:
         PushMatrix
         Rotate:
@@ -15,7 +13,7 @@
             origin: self.center
         Rectangle:
             pos: self.pos
-            size: self.size
+            size: 10,20
         PopMatrix
 
 <Ball1>:
@@ -25,7 +23,7 @@
             rgba: 1,0,0,1
         Ellipse:
             pos: self.pos
-            size: self.size
+            size: 10,10
 <Ball2>:
     size: 10,10
     canvas:
@@ -33,7 +31,7 @@
             rgba: 0,1,1,1
         Ellipse:
             pos: self.pos
-            size: self.size
+            size: 10,10
 
 <Ball3>:
     size: 10,10
@@ -42,7 +40,7 @@
             rgba: 1,1,0,1
         Ellipse:
             pos: self.pos
-            size: self.size
+            size: 10,10
 
 <Game>:
     car: game_car
@@ -52,13 +50,13 @@
 
     Car:
         id: game_car
-        center: self.parent.center
+        center: self.center
     Ball1:
         id: game_ball1
-        center: self.parent.center
+        center: self.center
     Ball2:
         id: game_ball2
-        center: self.parent.center
+        center: self.center
     Ball3:
         id: game_ball3
-        center: self.parent.center
+        center: self.center

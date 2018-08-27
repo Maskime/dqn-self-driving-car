@@ -59,6 +59,8 @@ class Car(Widget):
         else:
             self.signal3 = self.sensor_sanddensity(self.sensor3_x, self.sensor3_y)
 
+        # print("New car position ({}), ({})".format(self.pos, self.to_local(self.pos[0], self.pos[1])))
+
     def sensor_sanddensity(self, sensor_x, sensor_y):
 
         int_sensorx = int(sensor_x)

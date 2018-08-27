@@ -1,5 +1,7 @@
 # Creating the game class
 from kivy.core.window import Window
+from kivy.uix.relativelayout import RelativeLayout
+from kivy.uix.scatterlayout import ScatterLayout
 from kivy.vector import Vector
 
 from kivy.properties import ObjectProperty
@@ -11,7 +13,7 @@ from widgets.Balls import Ball1, Ball2, Ball3
 from widgets.CarWidget import Car
 
 
-class Game(Widget):
+class Game(RelativeLayout):
     car = ObjectProperty(None)
     ball1 = ObjectProperty(None)
     ball2 = ObjectProperty(None)
@@ -38,7 +40,7 @@ class Game(Widget):
 
     def serve_car(self):
         self.set_goal()
-        self.car.center = self.center
+        self.car.center = (50, 50)
         self.car.velocity = Vector(6, 0)
 
     def set_goal(self):
@@ -57,7 +59,7 @@ class Game(Widget):
         if self.first_update or self.changed_size() or window is not None:
             self.first_update = False
             self.reset_sand()
-            self.car.center = ((self.width / 2), (self.height / 2))
+            self.car.center = (50, 50)
             self.car.sand = self.sand
             self.car.sand_length = self.width
             self.car.sand_width = self.height
@@ -65,7 +67,7 @@ class Game(Widget):
             self.brain.reset()
             print ("resetting, new size [{}x{}], goal_position ({};{})".format(self.width, self.height, self.goal_x,
                                                                                self.goal_y))
-            print (self.pos)
+            print (self.pos, self.car.size)
 
     def update(self, dt):
 

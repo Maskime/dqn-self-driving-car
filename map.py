@@ -6,6 +6,7 @@ from kivy.app import App
 from kivy.clock import Clock
 from kivy.config import Config
 from kivy.core.window import Window
+from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.gridlayout import GridLayout
 
 # Importing the Dqn object from our AI in ai.py
@@ -21,7 +22,7 @@ from widgets.PaintWidget import PaintWidget
 Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
 
 
-class RootWidget(GridLayout):
+class RootWidget(BoxLayout):
     pass
 
 
@@ -53,7 +54,7 @@ class CarApp(App):
         # buttons = Buttons()
         # buttons.set_bindinds(self.clear_canvas, self.save, self.load)
         graph = GraphWidget()
-        graph.nb_pointsdisplay = 500
+        graph.set_pointsdisplayed(500)
         graph.game_widget = self.game_widget
         # self.right_panel.add_widget(buttons)
         # self.right_panel.add_widget(graph)

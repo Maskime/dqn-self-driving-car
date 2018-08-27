@@ -30,6 +30,10 @@ class GraphWidget(BoxLayout):
 
         self.add_widget(self.graph_canvas)
 
+    def set_pointsdisplayed(self, points):
+        self.nb_pointsdisplay = points
+        self.ax.set_xlim(0, self.nb_pointsdisplay)
+
     def update(self, dt):
         if self.game_widget is None or len(self.game_widget.scores) == 0:
             pass
