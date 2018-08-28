@@ -1,6 +1,26 @@
 #:kivy 1.0.9
 # ref: https://kivy.org/docs/tutorials/pong.html
 
+<TopMenuWidget>:
+    pos_hint: {'top':1}
+    save_btn: save_button
+    load_btn: load_button
+    clear_btn: clear_button
+    ActionView:
+        use_separator: True
+        ActionPrevious:
+            title: 'Self-Driving Car'
+            with_previous: False
+        ActionButton:
+            id: save_button
+            text: 'Save'
+        ActionButton:
+            id: load_button
+            text: 'Load'
+        ActionButton:
+            id: clear_button
+            text: 'Clear'
+
 <RootWidget>:
     orientation: 'vertical'
 

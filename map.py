@@ -6,6 +6,8 @@ from kivy.app import App
 from kivy.clock import Clock
 from kivy.config import Config
 from kivy.core.window import Window
+from kivy.properties import ObjectProperty
+from kivy.uix.actionbar import ActionBar
 from kivy.uix.boxlayout import BoxLayout
 
 # Importing the Dqn object from our AI in ai.py
@@ -23,6 +25,12 @@ Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
 
 class RootWidget(BoxLayout):
     pass
+
+
+class TopMenuWidget(ActionBar):
+    save_btn = ObjectProperty(None)
+    load_btn = ObjectProperty(None)
+    clear_btn = ObjectProperty(None)
 
 
 # Adding the API Buttons (clear, save and load)
@@ -53,7 +61,13 @@ class CarApp(App):
         graph.size_hint = (1, 0.3)
         graph.game_widget = self.game_widget
 
+        action_bar = TopMenuWidget()
+        action_bar.save_btn.bind(on_release=self.save)
+        action_bar.load_btn.bind(on_release=self.load)
+        action_bar.clear_btn.bind(on_release=self.clear_canvas)
+
         root = RootWidget()
+        root.add_widget(action_bar)
         root.add_widget(graph)
         root.add_widget(self.game_widget)
 
