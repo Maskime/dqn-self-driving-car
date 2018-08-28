@@ -7,7 +7,6 @@ from kivy.clock import Clock
 from kivy.config import Config
 from kivy.core.window import Window
 from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.gridlayout import GridLayout
 
 # Importing the Dqn object from our AI in ai.py
 from ai import Dqn
@@ -50,18 +49,13 @@ class CarApp(App):
         self.painter.game = self.game_widget
         self.game_widget.add_widget(self.painter)
 
-        # self.right_panel = RightPanelWidget()
-        # buttons = Buttons()
-        # buttons.set_bindinds(self.clear_canvas, self.save, self.load)
         graph = GraphWidget()
-        graph.set_pointsdisplayed(500)
+        graph.size_hint = (1, 0.3)
         graph.game_widget = self.game_widget
-        # self.right_panel.add_widget(buttons)
-        # self.right_panel.add_widget(graph)
 
         root = RootWidget()
-        root.add_widget(self.game_widget)
         root.add_widget(graph)
+        root.add_widget(self.game_widget)
 
         return root
 

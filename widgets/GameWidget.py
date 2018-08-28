@@ -1,7 +1,5 @@
 # Creating the game class
 from kivy.core.window import Window
-from kivy.uix.relativelayout import RelativeLayout
-from kivy.uix.scatterlayout import ScatterLayout
 from kivy.vector import Vector
 
 from kivy.properties import ObjectProperty
@@ -13,7 +11,7 @@ from widgets.Balls import Ball1, Ball2, Ball3
 from widgets.CarWidget import Car
 
 
-class Game(RelativeLayout):
+class Game(Widget):
     car = ObjectProperty(None)
     ball1 = ObjectProperty(None)
     ball2 = ObjectProperty(None)

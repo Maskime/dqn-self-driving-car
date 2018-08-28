@@ -5,7 +5,7 @@
     orientation: 'vertical'
 
 <Car>:
-    size:10,20
+    size: 20,10
     canvas:
         PushMatrix
         Rotate:
@@ -13,7 +13,7 @@
             origin: self.center
         Rectangle:
             pos: self.pos
-            size: 10,20
+            size: self.size
         PopMatrix
 
 <Ball1>:
@@ -23,7 +23,7 @@
             rgba: 1,0,0,1
         Ellipse:
             pos: self.pos
-            size: 10,10
+            size: self.size
 <Ball2>:
     size: 10,10
     canvas:
@@ -31,7 +31,7 @@
             rgba: 0,1,1,1
         Ellipse:
             pos: self.pos
-            size: 10,10
+            size: self.size
 
 <Ball3>:
     size: 10,10
@@ -40,7 +40,7 @@
             rgba: 1,1,0,1
         Ellipse:
             pos: self.pos
-            size: 10,10
+            size: self.size
 
 <Game>:
     car: game_car
@@ -50,13 +50,13 @@
 
     Car:
         id: game_car
-        center: self.center
+        center: self.parent.center
     Ball1:
         id: game_ball1
-        center: self.center
+        center: self.parent.center
     Ball2:
         id: game_ball2
-        center: self.center
+        center: self.parent.center
     Ball3:
         id: game_ball3
-        center: self.center
+        center: self.parent.center
