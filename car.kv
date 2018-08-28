@@ -6,6 +6,7 @@
     save_btn: save_button
     load_btn: load_button
     clear_btn: clear_button
+    config_btn: config_button
     ActionView:
         use_separator: True
         ActionPrevious:
@@ -20,6 +21,34 @@
         ActionButton:
             id: clear_button
             text: 'Clear'
+        ActionButton:
+            id: config_button
+            text: 'Configuration'
+
+<ConfigurationWidget>:
+    orientation: 'vertical'
+    gammarate_txt: gamma_rate_txtinput
+    save_btn: save_button
+    cancel_btn: cancel_button
+    GridLayout:
+        cols:2
+        rows:3
+        size_hint: (0.5, 0.5)
+        Label:
+            text: 'Gamma'
+        TextInput:
+            id: gamma_rate_txtinput
+            multiline: False
+    GridLayout:
+        cols:2
+        rows:1
+        size_hint: (0.5, 0.5)
+        Button:
+            id: save_button
+            text: 'Save'
+        Button:
+            id: cancel_button
+            text: 'Cancel'
 
 <RootWidget>:
     orientation: 'vertical'

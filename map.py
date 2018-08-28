@@ -6,31 +6,29 @@ from kivy.app import App
 from kivy.clock import Clock
 from kivy.config import Config
 from kivy.core.window import Window
-from kivy.properties import ObjectProperty
-from kivy.uix.actionbar import ActionBar
 from kivy.uix.boxlayout import BoxLayout
 
 # Importing the Dqn object from our AI in ai.py
+from kivy.uix.button import Button
+from kivy.uix.popup import Popup
+
 from ai import Dqn
 # Importing widget that are outside this file for kivy
 from widgets.ButtonsWidget import Buttons
+from widgets.ConfigurationWidget import ConfigurationWidget
 from widgets.GameWidget import Game
 from widgets.GraphWidget import GraphWidget
 from widgets.RightPanelWidget import RightPanelWidget
 from widgets.PaintWidget import PaintWidget
 
 # Adding this line if we don't want the right click to put a red point
+from widgets.TopMenuWidget import TopMenuWidget
+
 Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
 
 
 class RootWidget(BoxLayout):
     pass
-
-
-class TopMenuWidget(ActionBar):
-    save_btn = ObjectProperty(None)
-    load_btn = ObjectProperty(None)
-    clear_btn = ObjectProperty(None)
 
 
 # Adding the API Buttons (clear, save and load)
@@ -65,6 +63,7 @@ class CarApp(App):
         action_bar.save_btn.bind(on_release=self.save)
         action_bar.load_btn.bind(on_release=self.load)
         action_bar.clear_btn.bind(on_release=self.clear_canvas)
+        action_bar.config_btn.bind(on_release=self.show_configuration)
 
         root = RootWidget()
         root.add_widget(action_bar)
@@ -86,6 +85,13 @@ class CarApp(App):
     def load(self, obj):
         print("loading last saved brain...")
         self.brain.load()
+
+    def show_configuration(self, btn):
+        content = ConfigurationWidget()
+        popup = Popup(content=content, auto_dismiss=False, title='Configuration')
+        popup.open()
+        content.save_btn.bind(on_release=popup.dismiss)
+        content.cancel_btn.bind(on_release=popup.dismiss)
 
 
 # Running the whole thing
