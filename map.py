@@ -19,6 +19,7 @@ from widgets.ConfigurationWidget import ConfigurationWidget
 from widgets.GameWidget import Game
 from widgets.GraphWidget import GraphWidget
 from widgets.PaintWidget import PaintWidget
+from widgets.ConfigValueWidget import ConfigValueWidget
 
 # Adding this line if we don't want the right click to put a red point
 from widgets.TopMenuWidget import TopMenuWidget

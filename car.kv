@@ -1,5 +1,4 @@
 #:kivy 1.0.9
-# ref: https://kivy.org/docs/tutorials/pong.html
 
 <TopMenuWidget>:
     pos_hint: {'top':1}
@@ -29,24 +28,95 @@
             id: config_button
             text: 'Configuration'
 
+<Separator@Widget>:
+    canvas:
+        Color:
+            rgba: 1, 1, 1, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+<HSeparator@Separator>:
+    size_hint_y: None
+    height: dp(2)
+
+<VSeparator@Separator>:
+    size_hint_x: None
+    width: dp(2)
+
+<ConfigValueWidget>:
+    orientation: 'horizontal'
+    inner_label:config_label
+    text:'set this'
+    value: '0'
+    size_hint: (1, None)
+    height: 50
+    pos_hint: {'top': 1}
+    Label:
+        id:config_label
+        text: self.parent.text
+    TextInput:
+        id:text_input
+        multiline: False
+        text: self.parent.value
+
+<ConfigurationTitle@Label>:
+    pos_hint: {'left': 1}
+    size_hint: (1, None)
+    height: 50
+
 <ConfigurationWidget>:
     orientation: 'vertical'
-    gammarate_txt: gamma_rate_txtinput
+    gammarate_txt: gamma_rate
     save_btn: save_button
     cancel_btn: cancel_button
-    GridLayout:
-        cols:2
-        rows:3
-        size_hint: (0.5, 0.5)
-        Label:
+
+    pos_hint:{'top': 1}
+
+    ConfigurationTitle:
+        text: 'DQN Configuration'
+    HSeparator
+    BoxLayout:
+        orientation: 'vertical'
+        ConfigValueWidget:
+            id:gamma_rate
             text: 'Gamma'
-        TextInput:
-            id: gamma_rate_txtinput
-            multiline: False
-    GridLayout:
-        cols:2
-        rows:1
-        size_hint: (0.5, 0.5)
+            value: '0'
+        ConfigValueWidget:
+            id:hidden_neurons
+            text: 'NB Hidden Neurons'
+            value: '0'
+        ConfigValueWidget:
+            id:learning_rate
+            text: 'Learning Rate'
+            value: '0'
+        ConfigValueWidget:
+            id:temperature
+            text: 'Temperature'
+            value: '0'
+        ConfigValueWidget:
+            id:sample_size
+            text: 'Sample Size'
+            value: '0'
+    ConfigurationTitle:
+        text: 'Rewards Configuration'
+    HSeparator
+    BoxLayout:
+        orientation: 'vertical'
+        ConfigValueWidget:
+            id:decay_reward
+            text: 'Decay Reward'
+            value: '0'
+        ConfigValueWidget:
+            id:distance_reward
+            text: 'Distance Reward'
+            value: '0'
+    HSeparator
+    BoxLayout:
+        pos_hint: {'bottom': 1}
+        orientation: 'horizontal'
+        size_hint: (1, None)
+        height: 50
         Button:
             id: save_button
             text: 'Save'
