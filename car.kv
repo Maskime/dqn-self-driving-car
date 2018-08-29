@@ -7,11 +7,15 @@
     load_btn: load_button
     clear_btn: clear_button
     config_btn: config_button
+    pause_btn: pause_button
     ActionView:
         use_separator: True
         ActionPrevious:
             title: 'Self-Driving Car'
             with_previous: False
+        ActionButton:
+            id: pause_button
+            text: 'Pause/Play'
         ActionButton:
             id: save_button
             text: 'Save'

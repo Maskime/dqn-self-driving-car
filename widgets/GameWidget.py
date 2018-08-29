@@ -27,6 +27,7 @@ class Game(Widget):
     first_update = True
     last_distance = 0
     dirty = False
+    paused = False
 
     def __init__(self, **kwargs):
         super(Game, self).__init__(**kwargs)
@@ -67,7 +68,13 @@ class Game(Widget):
                                                                                self.goal_y))
             print (self.pos, self.car.size)
 
+    def pause_resume(self):
+        self.paused = not self.paused
+
     def update(self, dt):
+
+        if self.paused:
+            return False
 
         self.init()
 

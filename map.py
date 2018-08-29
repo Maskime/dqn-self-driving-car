@@ -18,7 +18,6 @@ from widgets.ButtonsWidget import Buttons
 from widgets.ConfigurationWidget import ConfigurationWidget
 from widgets.GameWidget import Game
 from widgets.GraphWidget import GraphWidget
-from widgets.RightPanelWidget import RightPanelWidget
 from widgets.PaintWidget import PaintWidget
 
 # Adding this line if we don't want the right click to put a red point
@@ -37,13 +36,12 @@ class CarApp(App):
     scores = []
     game_widget = None
     right_panel = None
+    paused = False
+    configuration_popup = None
 
     def __init__(self, **kwargs):
         super(CarApp, self).__init__(**kwargs)
         self.painter = PaintWidget()
-
-    def on_resize(self):
-        print("resized")
 
     def build(self):
         self.game_widget = Game()
@@ -60,6 +58,7 @@ class CarApp(App):
         graph.game_widget = self.game_widget
 
         action_bar = TopMenuWidget()
+        action_bar.pause_btn.bind(on_release=self.pause_resume)
         action_bar.save_btn.bind(on_release=self.save)
         action_bar.load_btn.bind(on_release=self.load)
         action_bar.clear_btn.bind(on_release=self.clear_canvas)
@@ -71,6 +70,12 @@ class CarApp(App):
         root.add_widget(self.game_widget)
 
         return root
+
+    def pause_resume(self, btn=None):
+        self.paused = not self.paused
+        self.game_widget.pause_resume()
+        if not self.paused:
+            Clock.schedule_interval(self.game_widget.update, 1.0 / 60.0)
 
     def clear_canvas(self, obj):
         self.painter.canvas.clear()
@@ -87,11 +92,21 @@ class CarApp(App):
         self.brain.load()
 
     def show_configuration(self, btn):
+        self.pause_resume()
         content = ConfigurationWidget()
-        popup = Popup(content=content, auto_dismiss=False, title='Configuration')
-        popup.open()
-        content.save_btn.bind(on_release=popup.dismiss)
-        content.cancel_btn.bind(on_release=popup.dismiss)
+        self.configuration_popup = Popup(content=content, auto_dismiss=False, title='Configuration')
+        self.configuration_popup.open()
+        content.save_btn.bind(on_release=self.save_configuration)
+        content.cancel_btn.bind(on_release=self.close_configuration)
+
+    def save_configuration(self, btn):
+        self.pause_resume()
+        self.configuration_popup.dismiss()
+
+    def close_configuration(self, btn):
+        self.pause_resume()
+        self.configuration_popup.dismiss()
+
 
 
 # Running the whole thing
