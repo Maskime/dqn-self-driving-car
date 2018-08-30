@@ -12,6 +12,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.popup import Popup
 
+from Configuration import Configuration
 from ai import Dqn
 # Importing widget that are outside this file for kivy
 from widgets.ButtonsWidget import Buttons
@@ -39,10 +40,13 @@ class CarApp(App):
     right_panel = None
     paused = False
     configuration_popup = None
+    config_widget = None
 
     def __init__(self, **kwargs):
         super(CarApp, self).__init__(**kwargs)
         self.painter = PaintWidget()
+        self.self_driving_config = Configuration()
+        self.self_driving_config.load()
 
     def build(self):
         self.game_widget = Game()
@@ -94,20 +98,21 @@ class CarApp(App):
 
     def show_configuration(self, btn):
         self.pause_resume()
-        content = ConfigurationWidget()
-        self.configuration_popup = Popup(content=content, auto_dismiss=False, title='Configuration')
+        self.config_widget = ConfigurationWidget()
+        self.config_widget.set_config(self.self_driving_config)
+        self.configuration_popup = Popup(content=self.config_widget, auto_dismiss=False, title='Configuration')
         self.configuration_popup.open()
-        content.save_btn.bind(on_release=self.save_configuration)
-        content.cancel_btn.bind(on_release=self.close_configuration)
+        self.config_widget.save_btn.bind(on_release=self.save_configuration)
+        self.config_widget.cancel_btn.bind(on_release=self.close_configuration)
 
     def save_configuration(self, btn):
         self.pause_resume()
+        self.self_driving_config.update(self.config_widget.get_dict())
         self.configuration_popup.dismiss()
 
     def close_configuration(self, btn):
         self.pause_resume()
         self.configuration_popup.dismiss()
-
 
 
 # Running the whole thing

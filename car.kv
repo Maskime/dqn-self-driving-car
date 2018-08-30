@@ -47,6 +47,7 @@
 <ConfigValueWidget>:
     orientation: 'horizontal'
     inner_label:config_label
+    inner_input:text_input
     text:'set this'
     value: '0'
     size_hint: (1, None)
@@ -67,9 +68,17 @@
 
 <ConfigurationWidget>:
     orientation: 'vertical'
-    gammarate_txt: gamma_rate
     save_btn: save_button
     cancel_btn: cancel_button
+
+    dqn_gamma: gamma_rate
+    dqn_neurons: hidden_neurons
+    dqn_learning: learning_rate
+    dqn_temperature: temperature
+    dqn_sample: sample_size
+
+    reward_decay: decay_reward
+    reward_distance: distance_reward
 
     pos_hint:{'top': 1}
 

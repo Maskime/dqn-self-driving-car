@@ -29,6 +29,8 @@ class Game(Widget):
     dirty = False
     paused = False
 
+    config = None
+
     def __init__(self, **kwargs):
         super(Game, self).__init__(**kwargs)
         Window.bind(on_resize=self.init)
