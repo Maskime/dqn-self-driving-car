@@ -29,7 +29,7 @@ class Game(Widget):
     dirty = False
     paused = False
 
-    config = None
+    driving_config = None
 
     def __init__(self, **kwargs):
         super(Game, self).__init__(**kwargs)
@@ -56,19 +56,24 @@ class Game(Widget):
         changed = self.car.sand_length != 0 and self.car.sand_length != self.width
         return changed or self.car.sand_width != 0 and self.car.sand_width != self.height
 
-    def init(self, window=None, width=None, height=None):
-        if self.first_update or self.changed_size() or window is not None:
+    def init(self, window=None, width=None, height=None, reInit=False):
+        if self.first_update or self.changed_size() or window is not None or reInit:
             self.first_update = False
             self.reset_sand()
+            self.scores = []
             self.car.center = (50, 50)
             self.car.sand = self.sand
             self.car.sand_length = self.width
             self.car.sand_width = self.height
             self.set_goal()
-            self.brain.reset()
+            self.brain.reset(self.driving_config)
             print ("resetting, new size [{}x{}], goal_position ({};{})".format(self.width, self.height, self.goal_x,
                                                                                self.goal_y))
             print (self.pos, self.car.size)
+
+    def update_config(self, configuration):
+        self.driving_config = configuration
+        self.init(reInit=True)
 
     def pause_resume(self):
         self.paused = not self.paused
@@ -98,9 +103,9 @@ class Game(Widget):
             self.last_reward = -1
         else:  # otherwise
             self.car.velocity = Vector(6, 0).rotate(self.car.angle)
-            self.last_reward = -0.2
+            self.last_reward = self.driving_config.reward_decay
             if distance < self.last_distance:
-                self.last_reward = 0.1
+                self.last_reward = self.driving_config.reward_distance
 
         if self.car.x < 10:
             self.car.x = 10

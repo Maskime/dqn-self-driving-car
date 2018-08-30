@@ -21,14 +21,14 @@ class ConfigurationWidget(BoxLayout):
     def set_config(self, config):
         self.self_driving_config = config
 
-        self.dqn_gamma.value = self.self_driving_config.dqn_gamma
-        self.dqn_neurons.value = self.self_driving_config.dqn_hidden_neurons
-        self.dqn_learning.value = self.self_driving_config.dqn_learning_rate
-        self.dqn_temperature.value = self.self_driving_config.dqn_temperature
-        self.dqn_sample.value = self.self_driving_config.dqn_sample_size
+        self.dqn_gamma.value = str(self.self_driving_config.dqn_gamma)
+        self.dqn_neurons.value = str(self.self_driving_config.dqn_hidden_neurons)
+        self.dqn_learning.value = str(self.self_driving_config.dqn_learning_rate)
+        self.dqn_temperature.value = str(self.self_driving_config.dqn_temperature)
+        self.dqn_sample.value = str(self.self_driving_config.dqn_sample_size)
 
-        self.reward_decay.value = self.self_driving_config.reward_decay
-        self.reward_distance.value = self.self_driving_config.reward_distance
+        self.reward_decay.value = str(self.self_driving_config.reward_decay)
+        self.reward_distance.value = str(self.self_driving_config.reward_distance)
 
     def get_dict(self):
         return {

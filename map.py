@@ -34,7 +34,6 @@ class RootWidget(BoxLayout):
 
 # Adding the API Buttons (clear, save and load)
 class CarApp(App):
-    brain = Dqn(5, 3, 0.9)
     scores = []
     game_widget = None
     right_panel = None
@@ -47,9 +46,11 @@ class CarApp(App):
         self.painter = PaintWidget()
         self.self_driving_config = Configuration()
         self.self_driving_config.load()
+        self.brain = Dqn(5, 3, self.self_driving_config)
 
     def build(self):
         self.game_widget = Game()
+        self.game_widget.driving_config = self.self_driving_config
         self.game_widget.brain = self.brain
         self.game_widget.scores = self.scores
         self.game_widget.serve_car()
@@ -82,7 +83,7 @@ class CarApp(App):
         if not self.paused:
             Clock.schedule_interval(self.game_widget.update, 1.0 / 60.0)
 
-    def clear_canvas(self, obj):
+    def clear_canvas(self, obj=None):
         self.painter.canvas.clear()
         self.game_widget.reset_sand()
 
@@ -108,6 +109,8 @@ class CarApp(App):
     def save_configuration(self, btn):
         self.pause_resume()
         self.self_driving_config.update(self.config_widget.get_dict())
+        self.game_widget.update_config(self.self_driving_config)
+        self.clear_canvas()
         self.configuration_popup.dismiss()
 
     def close_configuration(self, btn):
