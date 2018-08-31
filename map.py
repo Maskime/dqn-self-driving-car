@@ -40,6 +40,7 @@ class CarApp(App):
     paused = False
     configuration_popup = None
     config_widget = None
+    graph_widget = None
 
     def __init__(self, **kwargs):
         super(CarApp, self).__init__(**kwargs)
@@ -59,9 +60,9 @@ class CarApp(App):
         self.painter.game = self.game_widget
         self.game_widget.add_widget(self.painter)
 
-        graph = GraphWidget()
-        graph.size_hint = (1, 0.3)
-        graph.game_widget = self.game_widget
+        self.graph_widget = GraphWidget()
+        self.graph_widget.size_hint = (1, 0.3)
+        self.graph_widget.game_widget = self.game_widget
 
         action_bar = TopMenuWidget()
         action_bar.pause_btn.bind(on_release=self.pause_resume)
@@ -72,7 +73,7 @@ class CarApp(App):
 
         root = RootWidget()
         root.add_widget(action_bar)
-        root.add_widget(graph)
+        root.add_widget(self.graph_widget)
         root.add_widget(self.game_widget)
 
         return root
@@ -80,6 +81,7 @@ class CarApp(App):
     def pause_resume(self, btn=None):
         self.paused = not self.paused
         self.game_widget.pause_resume()
+        self.graph_widget.pause_resume()
         if not self.paused:
             Clock.schedule_interval(self.game_widget.update, 1.0 / 60.0)
 

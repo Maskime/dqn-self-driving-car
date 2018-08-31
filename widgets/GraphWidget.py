@@ -15,6 +15,8 @@ class GraphWidget(BoxLayout):
     fig = None
     ax = None
 
+    paused = False
+
     nb_pointsdisplay = 100
 
     def __init__(self, **kwargs):
@@ -23,7 +25,6 @@ class GraphWidget(BoxLayout):
 
         self.fig = plt.figure()
         self.ax = self.fig.add_subplot(111)
-        # self.ax.set_ylabel('Last Scores')
         self.line1, = self.ax.plot([])
         self.ax.set_ylabel("Score Mean")
         self.ax.set_xlabel("Transition Number")
@@ -32,12 +33,14 @@ class GraphWidget(BoxLayout):
         self.add_widget(self.graph_canvas)
 
     def update(self, dt):
+        if self.paused:
+            return False
         if self.game_widget is None or len(self.game_widget.scores) == 0:
-            pass
+            return
 
         nb_scores = len(self.game_widget.scores)
         x_data = range(0, nb_scores)
-        # print(last_scores)
+
         self.line1.set_ydata(self.game_widget.scores)
         self.ax.set_ylim(np.min(self.game_widget.scores), np.max(self.game_widget.scores))
 
@@ -46,4 +49,9 @@ class GraphWidget(BoxLayout):
 
         self.graph_canvas.draw()
         # self.graph_canvas.flush_events()
+
+    def pause_resume(self):
+        self.paused = not self.paused
+        if not self.paused:
+            Clock.schedule_interval(self.update, 1.0 / 10.0)
 

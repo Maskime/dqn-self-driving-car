@@ -1,5 +1,6 @@
 # Creating the game class
 from kivy.core.window import Window
+from kivy.uix.relativelayout import RelativeLayout
 from kivy.vector import Vector
 
 from kivy.properties import ObjectProperty
@@ -11,11 +12,13 @@ from widgets.Balls import Ball1, Ball2, Ball3
 from widgets.CarWidget import Car
 
 
-class Game(Widget):
+class Game(RelativeLayout):
     car = ObjectProperty(None)
     ball1 = ObjectProperty(None)
     ball2 = ObjectProperty(None)
     ball3 = ObjectProperty(None)
+    top_image = ObjectProperty(None)
+
     brain = None
     action2rotation = [0, 20, -20]
     last_reward = 0
@@ -66,6 +69,7 @@ class Game(Widget):
             self.car.sand_length = self.width
             self.car.sand_width = self.height
             self.set_goal()
+            self.top_image.pos = (0, self.height - 100)
             self.brain.reset(self.driving_config)
             print ("resetting, new size [{}x{}], goal_position ({};{})".format(self.width, self.height, self.goal_x,
                                                                                self.goal_y))
@@ -121,6 +125,7 @@ class Game(Widget):
             self.last_reward = -1
 
         if distance < 100:
+            print("reached goal")
             self.goal_istop = not self.goal_istop
             self.set_goal()
         self.last_distance = distance

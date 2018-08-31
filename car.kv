@@ -137,7 +137,9 @@
     orientation: 'vertical'
 
 <Car>:
-    size: 20,10
+    size_hint: (None, None)
+    width: 20
+    height: 10
     canvas:
         PushMatrix
         Rotate:
@@ -149,7 +151,9 @@
         PopMatrix
 
 <Ball1>:
-    size: 10,10
+    size_hint: (None, None)
+    width: 10
+    height: 10
     canvas:
         Color:
             rgba: 1,0,0,1
@@ -157,7 +161,9 @@
             pos: self.pos
             size: self.size
 <Ball2>:
-    size: 10,10
+    size_hint: (None, None)
+    width: 10
+    height: 10
     canvas:
         Color:
             rgba: 0,1,1,1
@@ -166,7 +172,9 @@
             size: self.size
 
 <Ball3>:
-    size: 10,10
+    size_hint: (None, None)
+    width: 10
+    height: 10
     canvas:
         Color:
             rgba: 1,1,0,1
@@ -179,6 +187,7 @@
     ball1: game_ball1
     ball2: game_ball2
     ball3: game_ball3
+    top_image: top_goal
 
     Car:
         id: game_car
@@ -192,3 +201,9 @@
     Ball3:
         id: game_ball3
         center: self.parent.center
+    Image:
+        size_hint: (None, None)
+        width: 100
+        height: 100
+        id: top_goal
+        source: 'assets/top_goal.png'
