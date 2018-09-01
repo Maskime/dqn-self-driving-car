@@ -18,12 +18,17 @@ class PaintWidget(Widget):
             return False
         return True
 
+    def init_line(self, touch):
+        if not touch.ud or not touch.ud['line']:
+            Color(0.8, 0.7, 0)
+            touch.ud['line'] = Line(points=(touch.x, touch.y), width=10)
+        return touch
+
     def on_touch_down(self, touch):
         with self.canvas:
-            Color(0.8, 0.7, 0)
             if not self.check_within_canvas(touch):
                 return
-            touch.ud['line'] = Line(points=(touch.x, touch.y), width=10)
+            touch = self.init_line(touch)
             self.last_x = int(touch.x)
             self.last_y = int(touch.y)
             self.n_points = 0
@@ -34,6 +39,7 @@ class PaintWidget(Widget):
         if touch.button == 'left':
             if not self.check_within_canvas(touch):
                 return
+            touch = self.init_line(touch)
             touch.ud['line'].points += [touch.x, touch.y]
             x = int(touch.x)
             y = int(touch.y)
