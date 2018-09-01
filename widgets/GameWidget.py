@@ -18,6 +18,7 @@ class Game(RelativeLayout):
     ball2 = ObjectProperty(None)
     ball3 = ObjectProperty(None)
     top_image = ObjectProperty(None)
+    bottom_image = ObjectProperty(None)
 
     brain = None
     action2rotation = [0, 20, -20]
@@ -44,16 +45,16 @@ class Game(RelativeLayout):
 
     def serve_car(self):
         self.set_goal()
-        self.car.center = (50, 50)
+        self.car.center = self.center
         self.car.velocity = Vector(6, 0)
 
     def set_goal(self):
         if self.goal_istop:
-            self.goal_x = 20
-            self.goal_y = self.height - 20
+            self.goal_x = self.top_image.center[0]
+            self.goal_y = self.top_image.center[1]
         else:
-            self.goal_x = self.width - 20
-            self.goal_y = 20
+            self.goal_x = self.bottom_image.center[0]
+            self.goal_y = self.bottom_image.center[1]
 
     def changed_size(self):
         changed = self.car.sand_length != 0 and self.car.sand_length != self.width
@@ -64,12 +65,13 @@ class Game(RelativeLayout):
             self.first_update = False
             self.reset_sand()
             self.scores = []
-            self.car.center = (50, 50)
+            self.car.center = self.center
             self.car.sand = self.sand
             self.car.sand_length = self.width
             self.car.sand_width = self.height
             self.set_goal()
-            self.top_image.pos = (0, self.height - 100)
+            self.top_image.pos = (10, self.height - 110)
+            self.bottom_image.pos = (self.width - 110, 10)
             self.brain.reset(self.driving_config)
             print ("resetting, new size [{}x{}], goal_position ({};{})".format(self.width, self.height, self.goal_x,
                                                                                self.goal_y))
