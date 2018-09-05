@@ -60,7 +60,7 @@ class PaintWidget(Widget):
             touch = self.init_line(touch)
             touch.ud['line'].points += [touch.x, touch.y]
 
-            touch.ud['line'].width = 10
+            touch.ud['line'].width = self.line_width
             self.update_sand(touch)
             self.last_x = int(touch.x)
             self.last_y = int(touch.y)
