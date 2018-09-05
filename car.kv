@@ -214,3 +214,37 @@
         height: 100
         id: bottom_goal
         source: 'assets/bottom_goal.png'
+
+<TopPanel>
+    orientation: 'horizontal'
+    graph_widget: graph_widget
+    stats_widget: stats_widget
+    size_hint: (1, 0.3)
+    GraphWidget:
+        id: graph_widget
+        size_hint: (0.7, 1)
+    StatsWidget:
+        id: stats_widget
+        size_hint: (0.3, 1)
+
+<StatsWidget>
+    cols:2
+    rows:3
+
+    destination: lbl_destination
+    steps_count: lbl_stepscount
+    distance: lbl_distance
+
+    Label:
+        text: 'Current Destination :'
+        pos_hint: {'right': 1}
+    Label:
+        id: lbl_destination
+    Label:
+        text: 'Steps Count :'
+    Label:
+        id: lbl_stepscount
+    Label:
+        text: 'Distance :'
+    Label:
+        id: lbl_distance

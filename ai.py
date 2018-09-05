@@ -21,13 +21,14 @@ class Network(nn.Module):
         super(Network, self).__init__()
         self.input_size = input_size
         self.nb_action = nb_action
-        self.fc1 = nn.Linear(input_size,
-                             hidden_neurons)  # Declares that the first layer is fully connected to the second layer (fc stands for full connection)
+        self.fc0 = nn.Linear(input_size, hidden_neurons)
+        self.fc1 = nn.Linear(hidden_neurons, hidden_neurons)
         self.fc2 = nn.Linear(hidden_neurons, nb_action)
 
     def forward(self, state):  # Forward propagation
-        x = F.relu(self.fc1(state))
-        q_values = self.fc2(x)
+        x0 = F.relu(self.fc0(state))
+        x1 = F.relu(self.fc1(x0))
+        q_values = self.fc2(x1)
         return q_values
 
 

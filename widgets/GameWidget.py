@@ -21,15 +21,20 @@ class Game(RelativeLayout):
     bottom_image = ObjectProperty(None)
 
     brain = None
-    action2rotation = [0, 20, -20]
-    last_reward = 0
-    scores = []
     sand = None
+    stats_widget = None
+
+    action2rotation = [0, 20, -20]
+    scores = []
+
+    last_reward = 0
     goal_x = 0
     goal_y = 0
+    last_distance = 0
+    steps = 0
+
     goal_istop = True
     first_update = True
-    last_distance = 0
     dirty = False
     paused = False
 
@@ -65,6 +70,7 @@ class Game(RelativeLayout):
             self.first_update = False
             self.reset_sand()
             self.scores = []
+            self.steps = 0
             self.car.center = self.center
             self.car.sand = self.sand
             self.car.sand_length = self.width
@@ -94,7 +100,7 @@ class Game(RelativeLayout):
         xx = self.goal_x - self.car.x
         yy = self.goal_y - self.car.y
         orientation = Vector(*self.car.velocity).angle((xx, yy)) / 180.
-        last_signal = [self.car.signal1, self.car.signal2, self.car.signal3, orientation, -orientation]
+        last_signal = [self.car.signal1, self.car.signal2, self.car.signal3, orientation, -orientation, self.steps]
         action = self.brain.update(self.last_reward, last_signal)
         self.scores.append(self.brain.score())
         rotation = self.action2rotation[action]
@@ -126,8 +132,18 @@ class Game(RelativeLayout):
             self.car.y = self.height - 10
             self.last_reward = -1
 
+        self.last_distance = distance
         if distance < 100:
-            print("reached goal")
             self.goal_istop = not self.goal_istop
             self.set_goal()
-        self.last_distance = distance
+            self.steps = 0
+        else:
+            self.steps += 1
+
+        if self.stats_widget is not None:
+            self.stats_widget.update_stats(self.steps, self.get_destination(), self.last_distance)
+
+    def get_destination(self):
+        if self.goal_istop:
+            return "Serial SA"
+        return "Pictet"

@@ -6,6 +6,7 @@ from kivy.app import App
 from kivy.clock import Clock
 from kivy.config import Config
 from kivy.core.window import Window
+from kivy.properties import ObjectProperty
 from kivy.uix.boxlayout import BoxLayout
 
 # Importing the Dqn object from our AI in ai.py
@@ -23,7 +24,9 @@ from widgets.PaintWidget import PaintWidget
 from widgets.ConfigValueWidget import ConfigValueWidget
 
 # Adding this line if we don't want the right click to put a red point
+from widgets.StatsWidget import StatsWidget
 from widgets.TopMenuWidget import TopMenuWidget
+from widgets.TopPanel import TopPanel
 
 Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
 
@@ -40,14 +43,15 @@ class CarApp(App):
     paused = False
     configuration_popup = None
     config_widget = None
-    graph_widget = None
+    top_panel = None
+    stats_widget = None
 
     def __init__(self, **kwargs):
         super(CarApp, self).__init__(**kwargs)
         self.painter = PaintWidget()
         self.self_driving_config = Configuration()
         self.self_driving_config.load()
-        self.brain = Dqn(5, 3, self.self_driving_config)
+        self.brain = Dqn(6, 3, self.self_driving_config)
 
     def build(self):
         self.game_widget = Game()
@@ -60,9 +64,9 @@ class CarApp(App):
         self.painter.game = self.game_widget
         self.game_widget.add_widget(self.painter)
 
-        self.graph_widget = GraphWidget()
-        self.graph_widget.size_hint = (1, 0.3)
-        self.graph_widget.game_widget = self.game_widget
+        self.top_panel = TopPanel()
+        self.top_panel.graph_widget.game_widget = self.game_widget
+        self.game_widget.stats_widget = self.top_panel.stats_widget
 
         action_bar = TopMenuWidget()
         action_bar.pause_btn.bind(on_release=self.pause_resume)
@@ -73,15 +77,23 @@ class CarApp(App):
 
         root = RootWidget()
         root.add_widget(action_bar)
-        root.add_widget(self.graph_widget)
+        root.add_widget(self.top_panel)
         root.add_widget(self.game_widget)
 
         return root
 
+    def put_stats(self, dt):
+        print("Checking for stats")
+        if self.top_panel.stats_widget is None:
+            return
+        print("stats widget now available")
+
+        return False
+
     def pause_resume(self, btn=None):
         self.paused = not self.paused
         self.game_widget.pause_resume()
-        self.graph_widget.pause_resume()
+        self.top_panel.graph_widget.pause_resume()
         if not self.paused:
             Clock.schedule_interval(self.game_widget.update, 1.0 / 60.0)
 

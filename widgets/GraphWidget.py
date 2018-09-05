@@ -28,7 +28,6 @@ class GraphWidget(BoxLayout):
         self.ax = self.fig.add_subplot(111)
         self.line1, = self.ax.plot([])
         self.ax.set_ylabel("Score Mean")
-        self.ax.set_xlabel("Transition Number")
         self.graph_canvas = FigureCanvasKivyAgg(figure=self.fig)
 
         self.add_widget(self.graph_canvas)
