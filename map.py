@@ -24,6 +24,7 @@ from widgets.PaintWidget import PaintWidget
 from widgets.ConfigValueWidget import ConfigValueWidget
 
 # Adding this line if we don't want the right click to put a red point
+from widgets.SaveMapDialog import SaveMapDialog
 from widgets.StatsWidget import StatsWidget
 from widgets.TopMenuWidget import TopMenuWidget
 from widgets.TopPanel import TopPanel
@@ -41,10 +42,11 @@ class CarApp(App):
     game_widget = None
     right_panel = None
     paused = False
-    configuration_popup = None
+    current_popup = None
     config_widget = None
     top_panel = None
     stats_widget = None
+    save_map_dialog = None
 
     def __init__(self, **kwargs):
         super(CarApp, self).__init__(**kwargs)
@@ -70,7 +72,8 @@ class CarApp(App):
 
         action_bar = TopMenuWidget()
         action_bar.pause_btn.bind(on_release=self.pause_resume)
-        action_bar.save_btn.bind(on_release=self.save)
+        action_bar.save_brain_button.bind(on_release=self.save_brain)
+        action_bar.save_map_button.bind(on_release=self.show_save_map)
         action_bar.load_btn.bind(on_release=self.load)
         action_bar.clear_btn.bind(on_release=self.clear_canvas)
         action_bar.config_btn.bind(on_release=self.show_configuration)
@@ -101,11 +104,22 @@ class CarApp(App):
         self.painter.canvas.clear()
         self.game_widget.reset_sand()
 
-    def save(self, obj):
+    def save_brain(self, obj):
         print("saving brain...")
         self.brain.save()
-        # plt.plot(self.scores)
-        # plt.show()
+
+    def show_save_map(self, obj):
+        self.pause_resume()
+        self.save_map_dialog = SaveMapDialog()
+        self.current_popup = Popup(content=self.save_map_dialog, auto_dismiss=False, title='Save Map', size_hint=(None, None), size=(400, 200))
+        self.save_map_dialog.save_btn.bind(on_release=self.save_map)
+        self.save_map_dialog.cancel_btn.bind(on_release=self.close_popup)
+        self.current_popup.open()
+
+    def save_map(self, btn):
+        self.painter.save(self.save_map_dialog.filename_input.text)
+        self.current_popup.dismiss()
+        self.pause_resume()
 
     def load(self, obj):
         print("loading last saved brain...")
@@ -115,21 +129,21 @@ class CarApp(App):
         self.pause_resume()
         self.config_widget = ConfigurationWidget()
         self.config_widget.set_config(self.self_driving_config)
-        self.configuration_popup = Popup(content=self.config_widget, auto_dismiss=False, title='Configuration')
-        self.configuration_popup.open()
+        self.current_popup = Popup(content=self.config_widget, auto_dismiss=False, title='Configuration')
+        self.current_popup.open()
         self.config_widget.save_btn.bind(on_release=self.save_configuration)
-        self.config_widget.cancel_btn.bind(on_release=self.close_configuration)
+        self.config_widget.cancel_btn.bind(on_release=self.close_popup)
 
     def save_configuration(self, btn):
         self.pause_resume()
         self.self_driving_config.update(self.config_widget.get_dict())
         self.game_widget.update_config(self.self_driving_config)
         self.clear_canvas()
-        self.configuration_popup.dismiss()
+        self.current_popup.dismiss()
 
-    def close_configuration(self, btn):
+    def close_popup(self, btn):
         self.pause_resume()
-        self.configuration_popup.dismiss()
+        self.current_popup.dismiss()
 
 
 # Running the whole thing

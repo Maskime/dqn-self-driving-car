@@ -1,8 +1,34 @@
 #:kivy 1.0.9
 
+<SaveMapDialog>:
+    filename_input: filename_input
+    cancel_btn: cancel_btn
+    save_btn: save_btn
+
+    orientation: 'vertical'
+    BoxLayout:
+        orientation: 'horizontal'
+        size_hint: (1, None)
+        height: 50
+        Label:
+            text: 'File name'
+        TextInput:
+            id: filename_input
+    BoxLayout:
+        orientation: 'horizontal'
+        size_hint: (1, None)
+        height: 50
+        Button:
+            id: cancel_btn
+            text: 'Cancel'
+        Button:
+            id: save_btn
+            text: 'Save'
+
 <TopMenuWidget>:
     pos_hint: {'top':1}
-    save_btn: save_button
+    save_brain_button: save_brain_button
+    save_map_button: save_map_button
     load_btn: load_button
     clear_btn: clear_button
     config_btn: config_button
@@ -15,9 +41,15 @@
         ActionButton:
             id: pause_button
             text: 'Pause/Play'
-        ActionButton:
-            id: save_button
+        ActionGroup:
             text: 'Save'
+            mode: 'spinner'
+            ActionButton:
+                id: save_brain_button
+                text: 'Current Brain'
+            ActionButton:
+                id: save_map_button
+                text: 'Current Map'
         ActionButton:
             id: load_button
             text: 'Load'

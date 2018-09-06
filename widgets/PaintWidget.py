@@ -1,7 +1,8 @@
+import os
 from kivy.uix.widget import Widget
 
 from kivy.graphics import Color, Line
-import numpy as np
+import json
 
 
 class PaintWidget(Widget):
@@ -11,6 +12,9 @@ class PaintWidget(Widget):
     line_width = 10
 
     lines = []
+
+    def get_sanddimensions(self):
+        return len(self.game.sand[:, 0]), len(self.game.sand[0])
 
     def check_within_canvas(self, touch):
         sand_width = len(self.game.sand[:, 0])
@@ -64,3 +68,18 @@ class PaintWidget(Widget):
             self.update_sand(touch)
             self.last_x = int(touch.x)
             self.last_y = int(touch.y)
+
+    def on_touch_up(self, touch):
+        if not self.check_within_canvas(touch):
+            return
+        self.lines.append(touch.ud['line'].points)
+
+    def save(self, filename):
+        sand_width, sand_height = self.get_sanddimensions()
+        to_save = {
+            'dimensions': [sand_width, sand_height],
+            'lines': self.lines
+        }
+        file_location = os.path.join(os.path.dirname(__file__), '..', 'maps', filename)
+        with open(file_location, 'w+') as map_file:
+            map_file.write(json.dumps(to_save))
