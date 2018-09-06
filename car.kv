@@ -1,6 +1,6 @@
 #:kivy 1.0.9
 
-<SaveMapDialog>:
+<MapDialog>:
     filename_input: filename_input
     cancel_btn: cancel_btn
     save_btn: save_btn
@@ -33,6 +33,8 @@
     clear_btn: clear_button
     config_btn: config_button
     pause_btn: pause_button
+    load_map_btn: load_map_btn
+
     ActionView:
         use_separator: True
         ActionPrevious:
@@ -50,9 +52,15 @@
             ActionButton:
                 id: save_map_button
                 text: 'Current Map'
-        ActionButton:
-            id: load_button
+        ActionGroup:
             text: 'Load'
+            mode: 'spinner'
+            ActionButton:
+                id: load_button
+                text: 'Last Brain'
+            ActionButton:
+                id: load_map_btn
+                text: 'Map...'
         ActionButton:
             id: clear_button
             text: 'Clear'

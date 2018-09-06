@@ -6,11 +6,9 @@ from kivy.app import App
 from kivy.clock import Clock
 from kivy.config import Config
 from kivy.core.window import Window
-from kivy.properties import ObjectProperty
 from kivy.uix.boxlayout import BoxLayout
 
 # Importing the Dqn object from our AI in ai.py
-from kivy.uix.button import Button
 from kivy.uix.popup import Popup
 
 from Configuration import Configuration
@@ -24,7 +22,7 @@ from widgets.PaintWidget import PaintWidget
 from widgets.ConfigValueWidget import ConfigValueWidget
 
 # Adding this line if we don't want the right click to put a red point
-from widgets.SaveMapDialog import SaveMapDialog
+from widgets.MapDialog import MapDialog
 from widgets.StatsWidget import StatsWidget
 from widgets.TopMenuWidget import TopMenuWidget
 from widgets.TopPanel import TopPanel
@@ -46,7 +44,7 @@ class CarApp(App):
     config_widget = None
     top_panel = None
     stats_widget = None
-    save_map_dialog = None
+    map_dialog = None
 
     def __init__(self, **kwargs):
         super(CarApp, self).__init__(**kwargs)
@@ -75,6 +73,7 @@ class CarApp(App):
         action_bar.save_brain_button.bind(on_release=self.save_brain)
         action_bar.save_map_button.bind(on_release=self.show_save_map)
         action_bar.load_btn.bind(on_release=self.load)
+        action_bar.load_map_btn.bind(on_release=self.show_load_map)
         action_bar.clear_btn.bind(on_release=self.clear_canvas)
         action_bar.config_btn.bind(on_release=self.show_configuration)
 
@@ -110,14 +109,26 @@ class CarApp(App):
 
     def show_save_map(self, obj):
         self.pause_resume()
-        self.save_map_dialog = SaveMapDialog()
-        self.current_popup = Popup(content=self.save_map_dialog, auto_dismiss=False, title='Save Map', size_hint=(None, None), size=(400, 200))
-        self.save_map_dialog.save_btn.bind(on_release=self.save_map)
-        self.save_map_dialog.cancel_btn.bind(on_release=self.close_popup)
+        self.map_dialog = MapDialog()
+        self.current_popup = Popup(content=self.map_dialog, auto_dismiss=False, title='Save Map', size_hint=(None, None), size=(400, 200))
+        self.map_dialog.save_btn.bind(on_release=self.map_dialog_action)
+        self.map_dialog.cancel_btn.bind(on_release=self.close_popup)
         self.current_popup.open()
 
-    def save_map(self, btn):
-        self.painter.save(self.save_map_dialog.filename_input.text)
+    def show_load_map(self, obj):
+        self.pause_resume()
+        self.map_dialog = MapDialog(save_mode=False)
+        self.current_popup = Popup(content=self.map_dialog, auto_dismiss=False, title='Load Map', size_hint=(None, None), size=(400, 200))
+        self.map_dialog.save_btn.bind(on_release=self.map_dialog_action)
+        self.map_dialog.cancel_btn.bind(on_release=self.close_popup)
+        self.current_popup.open()
+
+    def map_dialog_action(self, btn):
+        if self.map_dialog.save_mode:
+            self.painter.save(self.map_dialog.filename_input.text)
+        else:
+            self.clear_canvas()
+            self.painter.load(self.map_dialog.filename_input.text)
         self.current_popup.dismiss()
         self.pause_resume()
 
