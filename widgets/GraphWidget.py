@@ -43,7 +43,7 @@ class GraphWidget(BoxLayout):
         start = len(self.game_widget.scores) - nb_scores
         y_data = self.game_widget.scores[start:]
         self.line1.set_ydata(y_data)
-        self.ax.set_ylim(np.min(y_data), np.max(y_data))
+        self.ax.set_ylim(np.min(self.game_widget.scores), np.max(self.game_widget.scores))
 
         self.line1.set_xdata(x_data)
         self.ax.set_xlim(0, nb_scores)

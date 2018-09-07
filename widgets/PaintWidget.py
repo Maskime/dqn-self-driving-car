@@ -4,6 +4,9 @@ from kivy.uix.widget import Widget
 
 from kivy.graphics import Color, Line
 import json
+from kivy.vector import Vector
+
+import numpy as np
 
 
 class PaintWidget(Widget):
@@ -26,22 +29,23 @@ class PaintWidget(Widget):
 
     def init_line(self, touch):
         if not touch.ud or not touch.ud['line']:
-            Color(0.8, 0.7, 0)
-            touch.ud['line'] = Line(points=(touch.x, touch.y), width=self.line_width)
+            with self.canvas:
+                Color(0.8, 0.7, 0)
+                touch.ud['line'] = Line(points=(touch.x, touch.y), width=self.line_width, cap='square')
         return touch
 
     def full_line(self, line_points):
-        Color(0.8, 0.7, 0)
-        Line(points=line_points, width=self.line_width)
+        with self.canvas:
+            Color(0.8, 0.7, 0)
+            Line(points=line_points, width=self.line_width, cap='square')
 
     def on_touch_down(self, touch):
-        with self.canvas:
-            if not self.check_within_canvas(touch):
-                return
-            touch = self.init_line(touch)
-            self.last_x = int(touch.x)
-            self.last_y = int(touch.y)
-            self.update_sand(self.last_x, self.last_y)
+        if not self.check_within_canvas(touch):
+            return
+        touch = self.init_line(touch)
+        self.last_x = int(touch.x)
+        self.last_y = int(touch.y)
+        self.update_sand(self.last_x, self.last_y)
 
     def compute_ranges(self, x, y):
         int_x = int(x)
@@ -66,12 +70,12 @@ class PaintWidget(Widget):
         if touch.button == 'left':
             if not self.check_within_canvas(touch):
                 return
-            with self.canvas:
-                touch = self.init_line(touch)
+            touch = self.init_line(touch)
             touch.ud['line'].points += [touch.x, touch.y]
 
             touch.ud['line'].width = self.line_width
             self.update_sand(touch.x, touch.y)
+            self.update_sandline([self.last_x, self.last_y], [touch.x, touch.y])
             self.last_x = int(touch.x)
             self.last_y = int(touch.y)
 
@@ -109,24 +113,45 @@ class PaintWidget(Widget):
             return
         sand_width, sand_height = self.get_sanddimensions()
         map_width, map_height = map_definition['dimensions']
+        fsand_width, fsand_height = float(sand_width), float(sand_height)
+        fmap_width, fmap_height = float(map_width), float(map_height)
         sand_surface = sand_width * sand_height
         map_surface = map_width * map_height
         if sand_surface > map_surface:
-            width_ratio = map_width / sand_width
-            height_ratio = map_height / sand_height
+            width_ratio = fsand_width / fmap_width
+            height_ratio = fsand_height / fmap_height
         else:
-            width_ratio = sand_width / map_width
-            height_ratio = sand_height / map_height
+            width_ratio = fmap_width / fsand_width
+            height_ratio = fmap_height / fsand_height
 
         print("Ratio to be applied [{}, {}]".format(width_ratio, height_ratio))
 
         self.lines = []
-        for line in map_definition['lines']:
+        for index, line in enumerate(map_definition['lines']):
+            print("Line number [{}]".format(index))
             new_line = []
+            previous_point = None
             for x, y in self.pairwise(line):
-                sand_x = x * width_ratio
-                sand_y = y * height_ratio
+                sand_x = float(x * width_ratio)
+                sand_y = float(y * height_ratio)
+                print("Map ({};{}) Sand ({},{})".format(x, y, sand_x, sand_y))
                 new_line += [sand_x, sand_y]
                 self.update_sand(sand_x, sand_y)
-            with self.canvas:
-                self.full_line(new_line)
+                if previous_point is not None:
+                    self.update_sandline(previous_point, [sand_x, sand_y])
+                previous_point = [sand_x, sand_y]
+
+            self.full_line(new_line)
+
+    @staticmethod
+    def get_points(quantity, p1, p2):
+        print("Requesting [{}] points".format(quantity))
+        return zip(np.linspace(p1[0], p2[0], quantity + 1), np.linspace(p1[1], p2[1], quantity + 1))
+
+    def update_sandline(self, point_1, point_2):
+        p1 = (point_1[0], point_1[1])
+        p2 = (point_2[0], point_2[1])
+        distance = Vector(p1).distance(p2)
+
+        for point in self.get_points(int(distance), point_1, point_2):
+            self.update_sand(point[0], point[1])
