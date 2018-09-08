@@ -115,14 +115,13 @@ class PaintWidget(Widget):
         map_width, map_height = map_definition['dimensions']
         fsand_width, fsand_height = float(sand_width), float(sand_height)
         fmap_width, fmap_height = float(map_width), float(map_height)
-        sand_surface = sand_width * sand_height
-        map_surface = map_width * map_height
-        if sand_surface > map_surface:
-            width_ratio = fsand_width / fmap_width
-            height_ratio = fsand_height / fmap_height
-        else:
-            width_ratio = fmap_width / fsand_width
-            height_ratio = fmap_height / fsand_height
+        '''
+        If the sand box size is bigger than the map, then we need to scale up
+        otherwise we need to scale down
+        scale factor :
+        '''
+        width_ratio = fsand_width / fmap_width
+        height_ratio = fsand_height / fmap_height
 
         print("Ratio to be applied [{}, {}]".format(width_ratio, height_ratio))
 

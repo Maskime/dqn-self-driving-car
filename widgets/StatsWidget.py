@@ -13,4 +13,4 @@ class StatsWidget(GridLayout):
     def update_stats(self, steps, destination, distance):
         self.steps_count.text = str(steps)
         self.destination.text = destination
-        self.distance.text = str(distance)
+        self.distance.text = str("{0:.2f}".format(distance))
