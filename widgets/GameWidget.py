@@ -27,11 +27,12 @@ class Game(RelativeLayout):
     action2rotation = [0, 20, -20]
     scores = []
 
-    last_reward = 0
-    goal_x = 0
-    goal_y = 0
-    last_distance = 0
+    last_reward = 0.0
+    goal_x = 0.0
+    goal_y = 0.0
+    last_distance = 0.0
     steps = 0
+    btw_goals = 0.0
 
     goal_istop = True
     first_update = True
@@ -71,7 +72,7 @@ class Game(RelativeLayout):
             self.reset_sand()
             self.scores = []
             self.steps = 0
-            self.car.center = self.center
+            self.car.center = (self.top_image.pos[0] + 100, self.top_image.pos[1])
             self.car.sand = self.sand
             self.car.sand_length = self.width
             self.car.sand_width = self.height
@@ -79,6 +80,7 @@ class Game(RelativeLayout):
             self.top_image.pos = (10, self.height - 110)
             self.bottom_image.pos = (self.width - 110, 10)
             self.brain.reset(self.driving_config)
+            self.btw_goals = Vector(self.top_image.center).distance(self.bottom_image.center)
             print ("resetting, new size [{}x{}], goal_position ({};{})".format(self.width, self.height, self.goal_x,
                                                                                self.goal_y))
             print (self.pos, self.car.size)
@@ -105,7 +107,7 @@ class Game(RelativeLayout):
         self.scores.append(self.brain.score())
         rotation = self.action2rotation[action]
         self.car.move(rotation)
-        distance = np.sqrt((self.car.x - self.goal_x) ** 2 + (self.car.y - self.goal_y) ** 2)
+        distance = Vector(self.car.get_carfront()).distance((self.goal_x, self.goal_y))
         self.ball1.pos = self.car.sensor1
         self.ball2.pos = self.car.sensor2
         self.ball3.pos = self.car.sensor3
@@ -139,9 +141,18 @@ class Game(RelativeLayout):
             self.steps = 0
         else:
             self.steps += 1
+            if self.steps % 600 == 0:
+                self.last_reward = -0.1 * (self.steps / 600)
+                print("Too long, reward [{0:.2f}]".format(self.last_reward))
 
+        stats = {
+            'Distance btw Goals': "{0:.2f}".format(self.btw_goals),
+            'Destination': self.get_destination(),
+            'Distance to Dest': "{0:.2f}".format(self.last_distance),
+            'Steps': str(self.steps)
+        }
         if self.stats_widget is not None:
-            self.stats_widget.update_stats(self.steps, self.get_destination(), self.last_distance)
+            self.stats_widget.update_stats(stats)
 
     def get_destination(self):
         if self.goal_istop:

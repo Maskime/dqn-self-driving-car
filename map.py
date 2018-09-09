@@ -110,7 +110,8 @@ class CarApp(App):
     def show_save_map(self, obj):
         self.pause_resume()
         self.map_dialog = MapDialog()
-        self.current_popup = Popup(content=self.map_dialog, auto_dismiss=False, title='Save Map', size_hint=(None, None), size=(400, 200))
+        self.current_popup = Popup(content=self.map_dialog, auto_dismiss=False, title='Save Map',
+                                   size_hint=(None, None), size=(400, 200))
         self.map_dialog.save_btn.bind(on_release=self.map_dialog_action)
         self.map_dialog.cancel_btn.bind(on_release=self.close_popup)
         self.current_popup.open()
@@ -118,7 +119,8 @@ class CarApp(App):
     def show_load_map(self, obj):
         self.pause_resume()
         self.map_dialog = MapDialog(save_mode=False)
-        self.current_popup = Popup(content=self.map_dialog, auto_dismiss=False, title='Load Map', size_hint=(None, None), size=(400, 200))
+        self.current_popup = Popup(content=self.map_dialog, auto_dismiss=False, title='Load Map',
+                                   size_hint=(None, None), size=(400, 200))
         self.map_dialog.save_btn.bind(on_release=self.map_dialog_action)
         self.map_dialog.cancel_btn.bind(on_release=self.close_popup)
         self.current_popup.open()

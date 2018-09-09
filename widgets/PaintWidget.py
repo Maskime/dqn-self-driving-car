@@ -28,7 +28,7 @@ class PaintWidget(Widget):
         return True
 
     def init_line(self, touch):
-        if not touch.ud or not touch.ud['line']:
+        if not touch.ud or 'line' not in touch.ud:
             with self.canvas:
                 Color(0.8, 0.7, 0)
                 touch.ud['line'] = Line(points=(touch.x, touch.y), width=self.line_width, cap='square')
@@ -144,7 +144,6 @@ class PaintWidget(Widget):
 
     @staticmethod
     def get_points(quantity, p1, p2):
-        print("Requesting [{}] points".format(quantity))
         return zip(np.linspace(p1[0], p2[0], quantity + 1), np.linspace(p1[1], p2[1], quantity + 1))
 
     def update_sandline(self, point_1, point_2):

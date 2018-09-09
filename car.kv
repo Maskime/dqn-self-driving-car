@@ -188,7 +188,13 @@
         Rectangle:
             pos: self.pos
             size: self.size
+        Color:
+            rgba: 1, 0, 0, 1
+        Rectangle:
+            pos: (self.pos[0] + self.width, self.center[1])
+            size: (2, 2)
         PopMatrix
+
 
 <Ball1>:
     size_hint: (None, None)
@@ -269,22 +275,3 @@
 
 <StatsWidget>
     cols:2
-    rows:3
-
-    destination: lbl_destination
-    steps_count: lbl_stepscount
-    distance: lbl_distance
-
-    Label:
-        text: 'Current Destination :'
-        pos_hint: {'right': 1}
-    Label:
-        id: lbl_destination
-    Label:
-        text: 'Steps Count :'
-    Label:
-        id: lbl_stepscount
-    Label:
-        text: 'Distance :'
-    Label:
-        id: lbl_distance

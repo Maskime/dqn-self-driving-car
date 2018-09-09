@@ -72,3 +72,6 @@ class Car(Widget):
         if sensor_x > self.sand_length - 10 or sensor_x < 10 or sensor_y > self.sand_width - 10 or sensor_y < 10:
             return True
         return False
+
+    def get_carfront(self):
+        return self.pos[0] + self.width, self.center[1]
