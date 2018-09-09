@@ -21,7 +21,6 @@ from widgets.GraphWidget import GraphWidget
 from widgets.PaintWidget import PaintWidget
 from widgets.ConfigValueWidget import ConfigValueWidget
 
-# Adding this line if we don't want the right click to put a red point
 from widgets.MapDialog import MapDialog
 from widgets.StatsWidget import StatsWidget
 from widgets.TopMenuWidget import TopMenuWidget

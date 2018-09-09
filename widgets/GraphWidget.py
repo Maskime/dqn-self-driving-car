@@ -8,7 +8,6 @@ import numpy as np
 
 
 class GraphWidget(BoxLayout):
-
     game_widget = None
     to_display = []
     graph_canvas = None
@@ -44,7 +43,8 @@ class GraphWidget(BoxLayout):
         y_data = self.game_widget.scores[start:]
         self.line1.set_ydata(y_data)
         min_val, max_val = np.min(self.game_widget.scores), np.max(self.game_widget.scores)
-        margin = max_val - min_val / 100
+        val_range = max_val - min_val
+        margin = 5 * val_range / 100
         self.ax.set_ylim(min_val - margin, max_val + margin)
 
         self.line1.set_xdata(x_data)
@@ -57,4 +57,3 @@ class GraphWidget(BoxLayout):
         self.paused = not self.paused
         if not self.paused:
             Clock.schedule_interval(self.update, 1.0 / self.refresh_rate)
-

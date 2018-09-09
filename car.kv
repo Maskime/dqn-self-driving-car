@@ -1,4 +1,5 @@
 #:kivy 1.0.9
+#:import Vector kivy.vector.Vector
 
 <MapDialog>:
     filename_input: filename_input
@@ -180,11 +181,17 @@
     size_hint: (None, None)
     width: 20
     height: 10
-    canvas:
+
+    red_sensor:red_sensor
+    blue_sensor:blue_sensor
+    yellow_sensor:yellow_sensor
+
+    canvas.before:
         PushMatrix
         Rotate:
             angle: self.angle
             origin: self.center
+    canvas:
         Rectangle:
             pos: self.pos
             size: self.size
@@ -193,7 +200,17 @@
         Rectangle:
             pos: (self.pos[0] + self.width, self.center[1])
             size: (2, 2)
+    canvas.after:
         PopMatrix
+    Ball1:
+        id: red_sensor
+        center: self.parent.center[0] + 15, self.parent.center[1]
+    Ball2:
+        id: blue_sensor
+        center: self.parent.center[0] + 15, self.parent.center[1] - 10
+    Ball3:
+        id: yellow_sensor
+        center: self.parent.center[0] + 15, self.parent.center[1] + 10
 
 
 <Ball1>:
@@ -230,23 +247,11 @@
 
 <Game>:
     car: game_car
-    ball1: game_ball1
-    ball2: game_ball2
-    ball3: game_ball3
     top_image: top_goal
     bottom_image: bottom_goal
 
     Car:
         id: game_car
-        center: self.parent.center
-    Ball1:
-        id: game_ball1
-        center: self.parent.center
-    Ball2:
-        id: game_ball2
-        center: self.parent.center
-    Ball3:
-        id: game_ball3
         center: self.parent.center
     Image:
         size_hint: (None, None)

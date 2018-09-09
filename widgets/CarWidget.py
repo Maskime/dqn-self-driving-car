@@ -1,8 +1,8 @@
+import numpy as np
 from kivy.uix.widget import Widget
 from kivy.vector import Vector
 
-from kivy.properties import NumericProperty, ReferenceListProperty
-import numpy as np
+from kivy.properties import NumericProperty, ReferenceListProperty, ObjectProperty
 
 
 class Car(Widget):
@@ -12,6 +12,10 @@ class Car(Widget):
     velocity_x = NumericProperty(0)
     velocity_y = NumericProperty(0)
     velocity = ReferenceListProperty(velocity_x, velocity_y)
+
+    red_sensor = ObjectProperty(0)
+    blue_sensor = ObjectProperty(0)
+    yellow_sensor = ObjectProperty(0)
 
     # Front sensor
     sensor1_x = NumericProperty(0)
@@ -40,35 +44,31 @@ class Car(Widget):
         self.rotation = rotation
         self.angle = self.angle + self.rotation
 
-        self.sensor1 = Vector(30, 0).rotate(self.angle) + self.pos
-        self.sensor2 = Vector(30, 0).rotate((self.angle + 30) % 360) + self.pos
-        self.sensor3 = Vector(30, 0).rotate((self.angle - 30) % 360) + self.pos
-
-        if self.sensor_onborder(self.sensor1_x, self.sensor1_y):
+        if self.sensor_onborder(self.red_sensor):
             self.signal1 = 1.
         else:
-            self.signal1 = self.sensor_sanddensity(self.sensor1_x, self.sensor1_y)
+            self.signal1 = self.sensor_sanddensity(self.red_sensor)
 
-        if self.sensor_onborder(self.sensor2_x, self.sensor2_y):
+        if self.sensor_onborder(self.blue_sensor):
             self.signal2 = 1.
         else:
-            self.signal2 = self.sensor_sanddensity(self.sensor2_x, self.sensor2_y)
+            self.signal2 = self.sensor_sanddensity(self.blue_sensor)
 
-        if self.sensor_onborder(self.sensor3_x, self.sensor3_y):
+        if self.sensor_onborder(self.yellow_sensor):
             self.signal3 = 1.
         else:
-            self.signal3 = self.sensor_sanddensity(self.sensor3_x, self.sensor3_y)
+            self.signal3 = self.sensor_sanddensity(self.yellow_sensor)
 
-        # print("New car position ({}), ({})".format(self.pos, self.to_local(self.pos[0], self.pos[1])))
+    def sensor_sanddensity(self, sensor):
 
-    def sensor_sanddensity(self, sensor_x, sensor_y):
-
-        int_sensorx = int(sensor_x)
-        int_sensory = int(sensor_y)
+        int_sensorx = int(sensor.center[0])
+        int_sensory = int(sensor.center[1])
 
         return int(np.sum(self.sand[int_sensorx - 10:int_sensorx + 10, int_sensory - 10:int_sensory + 10])) / 400.
 
-    def sensor_onborder(self, sensor_x, sensor_y):
+    def sensor_onborder(self, sensor):
+        sensor_x = sensor.center[0]
+        sensor_y = sensor.center[1]
         if sensor_x > self.sand_length - 10 or sensor_x < 10 or sensor_y > self.sand_width - 10 or sensor_y < 10:
             return True
         return False

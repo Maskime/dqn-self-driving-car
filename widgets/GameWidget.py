@@ -14,9 +14,6 @@ from widgets.CarWidget import Car
 
 class Game(RelativeLayout):
     car = ObjectProperty(None)
-    ball1 = ObjectProperty(None)
-    ball2 = ObjectProperty(None)
-    ball3 = ObjectProperty(None)
     top_image = ObjectProperty(None)
     bottom_image = ObjectProperty(None)
 
@@ -108,9 +105,6 @@ class Game(RelativeLayout):
         rotation = self.action2rotation[action]
         self.car.move(rotation)
         distance = Vector(self.car.get_carfront()).distance((self.goal_x, self.goal_y))
-        self.ball1.pos = self.car.sensor1
-        self.ball2.pos = self.car.sensor2
-        self.ball3.pos = self.car.sensor3
 
         if self.sand[int(self.car.x), int(self.car.y)] > 0:
             self.car.velocity = Vector(1, 0).rotate(self.car.angle)
@@ -118,8 +112,11 @@ class Game(RelativeLayout):
         else:  # otherwise
             self.car.velocity = Vector(6, 0).rotate(self.car.angle)
             self.last_reward = self.driving_config.reward_decay
-            if distance < self.last_distance:
+            distance_diff = self.last_distance - distance
+            if distance_diff > 0 and distance_diff >= 20:
                 self.last_reward = self.driving_config.reward_distance
+            elif distance_diff < 0:
+                self.last_reward = self.driving_config.reward_distance * -1
 
         if self.car.x < 10:
             self.car.x = 10
@@ -149,7 +146,8 @@ class Game(RelativeLayout):
             'Distance btw Goals': "{0:.2f}".format(self.btw_goals),
             'Destination': self.get_destination(),
             'Distance to Dest': "{0:.2f}".format(self.last_distance),
-            'Steps': str(self.steps)
+            'Steps': str(self.steps),
+            'Car sensors': 'R [{0:.1f}] B [{1:.1f}] Y [{2:.1f}]'.format(self.car.signal1, self.car.signal2, self.car.signal3)
         }
         if self.stats_widget is not None:
             self.stats_widget.update_stats(stats)
