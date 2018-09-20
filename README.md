@@ -1,4 +1,4 @@
-#Self Driving Car with DQN
+# Self Driving Car with DQN
 This project was created to demonstrate the usage of a DQN for a "Self driving car".
 
 The starting point is what was provided by the the [Udemy](https://www.udemy.com/) online course 
