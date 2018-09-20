@@ -209,5 +209,5 @@ class Game(RelativeLayout):
 
     def get_destination(self):
         if self.goal_istop:
-            return "Serial SA"
-        return "Pictet"
+            return "1"
+        return "2"
