@@ -23,12 +23,14 @@ class Network(nn.Module):
         self.nb_action = nb_action
         self.fc0 = nn.Linear(input_size, hidden_neurons)
         self.fc1 = nn.Linear(hidden_neurons, hidden_neurons)
+        self.fc11 = nn.Linear(hidden_neurons, hidden_neurons)
         self.fc2 = nn.Linear(hidden_neurons, nb_action)
 
     def forward(self, state):  # Forward propagation
         x0 = F.relu(self.fc0(state))
         x1 = F.relu(self.fc1(x0))
-        q_values = self.fc2(x1)
+        x11 = F.relu(self.fc11(x1))
+        q_values = self.fc2(x11)
         return q_values
 
 

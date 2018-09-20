@@ -182,10 +182,6 @@
     width: 20
     height: 10
 
-    red_sensor:red_sensor
-    blue_sensor:blue_sensor
-    yellow_sensor:yellow_sensor
-
     canvas.before:
         PushMatrix
         Rotate:
@@ -200,17 +196,19 @@
         Rectangle:
             pos: (self.pos[0] + self.width, self.center[1])
             size: (2, 2)
+        Color:
+            rgba: 0, 1, 0, 1
+        Rectangle:
+            pos:self.pos
+            size: (2, 2)
     canvas.after:
         PopMatrix
     Ball1:
-        id: red_sensor
-        center: self.parent.center[0] + 15, self.parent.center[1]
+        center: Vector(25, 0) + self.parent.center
     Ball2:
-        id: blue_sensor
-        center: self.parent.center[0] + 15, self.parent.center[1] - 10
+        center: Vector(25,0).rotate(30) + self.parent.center
     Ball3:
-        id: yellow_sensor
-        center: self.parent.center[0] + 15, self.parent.center[1] + 10
+        center: Vector(25,0).rotate(-30) + self.parent.center
 
 
 <Ball1>:
@@ -220,7 +218,7 @@
     canvas:
         Color:
             rgba: 1,0,0,1
-        Ellipse:
+        Rectangle:
             pos: self.pos
             size: self.size
 <Ball2>:
@@ -230,7 +228,7 @@
     canvas:
         Color:
             rgba: 0,1,1,1
-        Ellipse:
+        Rectangle:
             pos: self.pos
             size: self.size
 
@@ -241,7 +239,7 @@
     canvas:
         Color:
             rgba: 1,1,0,1
-        Ellipse:
+        Rectangle:
             pos: self.pos
             size: self.size
 
